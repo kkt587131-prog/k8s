@@ -1,0 +1,72 @@
+# 创建 Jenkins 目录
+mkdir -p /opt/jenkins/{home,war,logs}
+cd /opt/jenkins/war
+
+# 如果已经有 jenkins.war，复制到目录
+cp /tmp/jenkins.war /opt/jenkins/war/
+
+# 创建 systemd 服务文件
+cat > /etc/systemd/system/jenkins.service << 'EOF'
+[Unit]
+Description=Jenkins Continuous Integration Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Environment="JAVA_HOME=/usr/local/java"
+Environment="JENKINS_HOME=/opt/jenkins/home"
+ExecStart=/usr/local/java/bin/java -jar /opt/jenkins/war/jenkins.war --httpPort=8080
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
+# 重新加载 systemd
+systemctl daemon-reload
+
+# 启用开机自启
+systemctl enable jenkins
+
+# 启动 Jenkins
+systemctl start jenkins
+
+# 查看状态
+systemctl status jenkins
+
+# 查看启动日志
+journalctl -u jenkins -f
+
+# 开放 Jenkins 端口
+firewall-cmd --permanent --add-port=8080/tcp
+firewall-cmd --reload
+
+# 验证端口监听
+netstat -tulpn | grep 8080
+ss -tulpn | grep 8080
+
+
+#获取管理员密码
+cat ~/.jenkins/secrets/initialAdminPassword
+#运行war包
+java -jar jenkins.war --httpPort=8080
+
+#运行完成后会打印初始密码,注意留意
+
+
+
+#安装推荐插件
+#安装语言包Locale.hpi
+
+
+
+sudo cat /lib/systemd/system/docker.servic
+vim /lib/systemd/system/docker.servic
+# 修改前：ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+# 修改后：ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2376 -H fd:// --containerd=/run/containerd/containerd.sock
+(有安全风险，生成TLS保护)

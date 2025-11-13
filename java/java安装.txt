@@ -1,0 +1,29 @@
+# 切换到临时目录
+cd /tmp
+
+# 解压 JDK
+tar -xzf jdk-8u333-linux-x64.tar.gz
+
+# 移动 JDK 到系统目录
+mv jdk1.8.0_333 /usr/local/java-8
+
+# 创建软链接
+ln -sf /usr/local/java-8 /usr/local/java
+
+
+# 配置系统环境变量
+cat >> /etc/profile.d/java.sh << 'EOF'
+export JAVA_HOME=/usr/local/java
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+EOF
+
+# 使环境变量生效
+source /etc/profile.d/java.sh
+
+# 验证安装
+java -version
+which java
+
+
+https://github.com/kkt587131-prog/k8s

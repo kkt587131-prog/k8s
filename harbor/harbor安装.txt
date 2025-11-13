@@ -1,0 +1,26 @@
+tar -zxvf harbor-offline-installer-v2.0.6.tgz
+cd harbor
+docker load -i harbor/harbor.v2.0.6.tar.gz
+cp harbor.yml.tmpl harbor.yml
+vim harbor.yml
+
+
+#注意：没有ssl证书就注掉
+#https:
+  # https port for harbor, default is 443
+#  port: 443
+  # The path of cert and key files for nginx
+#  certificate: /your/certificate/path
+#  private_key: /your/private/key/path
+
+
+修改密码：harbor_admin_password: Harbor12345
+
+
+初始化&&安装
+./prepare
+./install.sh
+
+
+
+（重装注意删掉harbor的data,否则登录密码一直报错）
